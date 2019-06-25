@@ -14,7 +14,8 @@ const ObjectId = Schema.ObjectId;
 
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.URI;
+const uri = process.env.URI + process.env.PORT;
+uri = uri + process.env.URI2;
 mongoose.connect(uri, {useNewUrlParser: true});
 mongoose.set('useFindAndModify', false);
 const client = new MongoClient(uri, { useNewUrlParser: true });
