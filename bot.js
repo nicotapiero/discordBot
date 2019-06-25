@@ -43,7 +43,7 @@ const reactionSchema = new Schema({
   var Reaction = mongoose.model('Reaction', reactionSchema);
 
 
-
+//bot.login(process.env.TOKEN);
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -56,6 +56,12 @@ var bot = new Discord.Client({
    token: auth.token,
    autorun: true
 });
+
+
+require('http').createServer().listen(process.env.PORT);
+
+
+
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
