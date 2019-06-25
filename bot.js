@@ -176,8 +176,8 @@ bot.on("messageReactionAdd", function(messageReaction, user) {
                     console.log(doc);
 })};
 
-        console.log(reactions.count);
-        console.log('now ' +count)
+        //console.log(reactions.count);
+        //console.log('now ' +count)
 
 
 
