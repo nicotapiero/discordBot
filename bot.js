@@ -14,8 +14,7 @@ const ObjectId = Schema.ObjectId;
 
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://access:admin@discordcluster-bkmwi.mongodb.net/test?retryWrites=true&w=majority";
-
+const uri = process.env.URI;
 mongoose.connect(uri, {useNewUrlParser: true});
 const client = new MongoClient(uri, { useNewUrlParser: true });
 client.connect(err => {
