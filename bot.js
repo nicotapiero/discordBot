@@ -120,7 +120,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 });
 
 
-bot.on("messageReactionAdd", function(messageReaction, user){
+bot.on("messageReactionAdd", function(messageReaction, user) {
     console.log(messageReaction);
 
     var emoji;
@@ -156,13 +156,19 @@ bot.on("messageReactionAdd", function(messageReaction, user){
          console.log(err);
          return;
     }
-          console.log('Book successfully saved.');
+          console.log(emoji+ ' successfully saved.');
             });
 
 
 
 
       } else {
+
+        var count = reactions.count + 1;
+        const res = await Person.updateOne({ emoji: emoji }, { count: count });
+        res.n; // Number of documents matched
+        res.nModified;
+
         console.log(reactions.count);
 
 
