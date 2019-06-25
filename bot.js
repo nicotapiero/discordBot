@@ -58,7 +58,7 @@ var bot = new Discord.Client({
 });
 
 
-require('http').createServer().listen(process.env.PORT);
+//require('http').createServer().listen(process.env.PORT);
 
 
 
