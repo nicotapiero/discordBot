@@ -16,6 +16,7 @@ const ObjectId = Schema.ObjectId;
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.URI;
 mongoose.connect(uri, {useNewUrlParser: true});
+mongoose.set('useFindAndModify', false);
 const client = new MongoClient(uri, { useNewUrlParser: true });
 client.connect(err => {
   const collection = client.db("test").collection("devices");
@@ -165,15 +166,22 @@ bot.on("messageReactionAdd", function(messageReaction, user) {
       } else {
 
         var count = reactions.count + 1;
-        const res = await Person.updateOne({ emoji: emoji }, { count: count });
-        res.n; // Number of documents matched
-        res.nModified;
+        Reaction.findOneAndUpdate(
+    {"emoji": emoji},
+    {$set: {"count":count}},{returnNewDocument : true},
+    function(err, doc){
+                    if(err){
+                        console.log("Something wrong when updating record!");
+                    }
+                    console.log(doc);
+})};
 
         console.log(reactions.count);
+        console.log('now ' +count)
 
 
 
-      }
+
 
 
     });
@@ -185,6 +193,53 @@ bot.on("messageReactionAdd", function(messageReaction, user) {
 
 
     //Auth.findOne({nick: 'noname'}, function(err,obj) { console.log(obj); });
+
+
+});
+
+
+bot.on("messageReactionRemove", function(messageReaction, user){
+    console.log(`a reaction is removed from a message`);
+    console.log(messageReaction);
+
+    var emoji;
+    //<:lul:593130632717140032>;
+    //var letters = /^[0-9a-zA-Z]+$/;
+    if(messageReaction.d.emoji.id != null){
+      emoji = "<:" + messageReaction.d.emoji.name + ":" + messageReaction.d.emoji.id + '>'
+    } else {
+      emoji = messageReaction.d.emoji.name;
+    }
+
+    Reaction.findOne({ emoji: emoji }, function (err, reactions) {
+      if (err) {
+        console.log(err)
+      }
+
+
+
+        var count = reactions.count - 1;
+        Reaction.findOneAndUpdate(
+    {"emoji": emoji},
+    {$set: {"count":count}},{returnNewDocument : true},
+    function(err, doc){
+                    if(err){
+                        console.log("Something wrong when updating record!");
+                    }
+                    console.log(doc);
+    })});
+
+        //console.log(reactions.count);
+        //console.log('now ' +count)
+
+
+
+
+
+
+
+
+
 
 
 });
