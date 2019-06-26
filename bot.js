@@ -1,7 +1,22 @@
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
+
+
 var Discord = require('discord.io');
 var logger = require('winston');
 //var auth = require('./auth.json');
 
+//🤐
 
 
 
@@ -35,12 +50,20 @@ client.once('open', function() {
 
 
 
+
+
+
+
+
+
+
+
 const reactionSchema = new Schema({
   emoji: String,
   count: Number
 });
 //module.exports = Reaction;
-  var Reaction = mongoose.model('Reaction', reactionSchema);
+var Reaction = mongoose.model('Reaction', reactionSchema);
 
 
 //bot.login(process.env.TOKEN);
@@ -48,86 +71,100 @@ const reactionSchema = new Schema({
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
-    colorize: true
+  colorize: true
 });
 logger.level = 'debug';
 // Initialize Discord Bot
 var bot = new Discord.Client({
-   token: process.env.TOKEN,
-   autorun: true
+  token: process.env.TOKEN,
+  autorun: true
 });
 
 
 //require('http').createServer().listen(process.env.PORT);
 
+//Reaction.findOneAndDelete({emoji: '🤐'}).then((doc) => {})
+
+
+
+
+
+
 
 
 bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+  logger.info('Connected');
+  logger.info('Logged in as: ');
+  logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
-    if (message.substring(0, 1) == '!') {
-        var cmd = message.substring(1);
+  // Our bot needs to know if it will execute a command
+  // It will listen for messages that will start with `!`
+  if (message.substring(0, 1) == '!') {
+    var cmd = message.substring(1);
 
-        if (cmd == 'reactStats') {
-          var string = "Reactions:\n"
-          Reaction.find({ }, function (err, reactions) {
-            if (err) {
-              console.log(err)
-            }
+    if (cmd == 'reactStats') {
+      var string = "Reactions:\n"
+      Reaction.find({ }, function (err, reactions) {
+        if (err) {
+          console.log(err)
+        }
 
-            if (reactions == null) {
-              console.log('no reactions!')
-            } else {
-              console.log(reactions);
-              console.log('stats')
-              reactions.forEach(function(element) {
-                //var letters = /^[0-9a-zA-Z]+$/;
-                //if(element.emoji.match(letters)){
-                //if (element.emoji.startsWith()) {
-                  string = string + element.emoji + ": " + element.count + "\n";
-              //  } else {
+        if (reactions == null) {
+          console.log('no reactions!')
+        } else {
+          console.log(reactions);
+          console.log('stats')
 
-                //string = string + element.emoji + ": " + element.count + "\n";
-              //}
-              })
-              console.log(string);
+          reactions.sort(function(a, b) {
+            return parseFloat(b.count) - parseFloat(a.count);
+          });
 
+          console.log(reactions)
 
+          reactions.forEach(function(element) {
+            //var letters = /^[0-9a-zA-Z]+$/;
+            //if(element.emoji.match(letters)){
+            //if (element.emoji.startsWith()) {
+            string = string + element.emoji + ": " + element.count + "\n";
+            //  } else {
 
-              bot.sendMessage({
-                          to: channelID,
-                          message: string
-                      });
-            }});
-
+            //string = string + element.emoji + ": " + element.count + "\n";
+            //}
+          })
+          console.log(string);
 
 
 
-
-
-
-
-
-        } else if (cmd == 'bestSmashBoy'){
           bot.sendMessage({
             to: channelID,
-            message: "Alp"
+            message: string
+          });
+        }});
+
+
+
+
+
+
+
+
+
+      } else if (cmd == 'bestSmashBoy'){
+        bot.sendMessage({
+          to: channelID,
+          message: "Alp"
         });
-        }
-     }
+      }
+    }
 
-     console.log(message.reaction);
+    console.log(message.reaction);
 
-});
+  });
 
 
-bot.on("messageReactionAdd", function(messageReaction, user) {
+  bot.on("messageReactionAdd", function(messageReaction, user) {
     console.log(messageReaction);
 
     var emoji;
@@ -160,11 +197,11 @@ bot.on("messageReactionAdd", function(messageReaction, user) {
 
         reaction.save(function(err, updatedReaction) {
           if(err){
-         console.log(err);
-         return;
-    }
+            console.log(err);
+            return;
+          }
           console.log(emoji+ ' successfully saved.');
-            });
+        });
 
 
 
@@ -173,70 +210,24 @@ bot.on("messageReactionAdd", function(messageReaction, user) {
 
         var count = reactions.count + 1;
         Reaction.findOneAndUpdate(
-    {"emoji": emoji},
-    {$set: {"count":count}},{returnNewDocument : true},
-    function(err, doc){
-                    if(err){
-                        console.log("Something wrong when updating record!");
-                    }
-                    console.log(doc);
-})};
+          {"emoji": emoji},
+          {$set: {"count":count}},{returnNewDocument : true},
+          function(err, doc){
+            if(err){
+              console.log("Something wrong when updating record!");
+            }
+            console.log(doc);
+          })};
 
-        //console.log(reactions.count);
-        //console.log('now ' +count)
-
-
-
-
-
-
-    });
+          //console.log(reactions.count);
+          //console.log('now ' +count)
 
 
 
 
 
 
-
-    //Auth.findOne({nick: 'noname'}, function(err,obj) { console.log(obj); });
-
-
-});
-
-
-bot.on("messageReactionRemove", function(messageReaction, user){
-    console.log(`a reaction is removed from a message`);
-    console.log(messageReaction);
-
-    var emoji;
-    //<:lul:593130632717140032>;
-    //var letters = /^[0-9a-zA-Z]+$/;
-    if(messageReaction.d.emoji.id != null){
-      emoji = "<:" + messageReaction.d.emoji.name + ":" + messageReaction.d.emoji.id + '>'
-    } else {
-      emoji = messageReaction.d.emoji.name;
-    }
-
-    Reaction.findOne({ emoji: emoji }, function (err, reactions) {
-      if (err) {
-        console.log(err)
-      }
-
-
-
-        var count = reactions.count - 1;
-        Reaction.findOneAndUpdate(
-    {"emoji": emoji},
-    {$set: {"count":count}},{returnNewDocument : true},
-    function(err, doc){
-                    if(err){
-                        console.log("Something wrong when updating record!");
-                    }
-                    console.log(doc);
-    })});
-
-        //console.log(reactions.count);
-        //console.log('now ' +count)
+        });
 
 
 
@@ -244,8 +235,60 @@ bot.on("messageReactionRemove", function(messageReaction, user){
 
 
 
+        //Auth.findOne({nick: 'noname'}, function(err,obj) { console.log(obj); });
+
+
+      });
+
+
+      bot.on("messageReactionRemove", function(messageReaction, user){
+        console.log(`a reaction is removed from a message`);
+        console.log(messageReaction);
+
+        var emoji;
+        //<:lul:593130632717140032>;
+        //var letters = /^[0-9a-zA-Z]+$/;
+        if(messageReaction.d.emoji.id != null){
+          emoji = "<:" + messageReaction.d.emoji.name + ":" + messageReaction.d.emoji.id + '>'
+        } else {
+          emoji = messageReaction.d.emoji.name;
+        }
+
+        Reaction.findOne({ emoji: emoji }, function (err, reactions) {
+          if (err) {
+            console.log(err)
+          }
+
+
+
+          var count = reactions.count - 1;
+          if (count === 0) {
+            //console.log(count + "achh")
+            Reaction.findOneAndDelete({emoji: emoji}).then((doc) => {})
+          } else {
+            Reaction.findOneAndUpdate(
+              {"emoji": emoji},
+              {$set: {"count":count}},{returnNewDocument : true},
+              function(err, doc){
+                if(err){
+                  console.log("Something wrong when updating record!");
+                }
+                console.log(doc);
+              })
+            }
+          });
+
+          //console.log(reactions.count);
+          //console.log('now ' +count)
 
 
 
 
-});
+
+
+
+
+
+
+
+        });
